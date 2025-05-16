@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: finstop-auth-service
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/finstop_auth
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
+
+grpc:
+  server:
+    port: 9090
+
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-key-here-minimum-32-characters}
+  access-token-expiration: 3600
+  refresh-token-expiration: 86400
+
+server:
+  port: ${SERVER_PORT:8080}
+
+logging:
+  level:
+    root: INFO
+    com.finstop: DEBUG 

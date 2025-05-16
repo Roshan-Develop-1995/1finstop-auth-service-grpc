@@ -1,0 +1,13 @@
+CREATE TABLE users (
+    id VARCHAR(36) PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    age INTEGER NOT NULL,
+    profession VARCHAR(255) NOT NULL,
+    education VARCHAR(255) NOT NULL,
+    provider VARCHAR(50) NOT NULL,
+    provider_id VARCHAR(255),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT age_check CHECK (age >= 0)
+); 

@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.finstop.auth.grpc";
+option java_outer_classname = "AuthProto";
+
+package auth;
+
+service AuthService {
+  // Custom registration
+  rpc Register(RegisterRequest) returns (AuthResponse);
+  
+  // Custom login
+  rpc Login(LoginRequest) returns (AuthResponse);
+  
+  // Google OAuth login
+  rpc GoogleLogin(GoogleLoginRequest) returns (AuthResponse);
+  
+  // Validate token
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
+
+message RegisterRequest {
+  // Field numbers (1-5) are used to identify fields in the binary format
+  // These numbers are used to serialize/deserialize the message
+  // Once in use, these numbers should not be changed to maintain backwards compatibility
+  string username = 1;     // Unique identifier for the user
+  string password = 2;     // User's password (should be hashed before storage)
+  int32 age = 3;          // User's age in years
+  string profession = 4;   // User's professional occupation
+  string education = 5;    // User's educational background
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message GoogleLoginRequest {
+  string auth_code = 1;
+}
+
+message AuthResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  string token_type = 3;
+  int64 expires_in = 4;
+  UserInfo user_info = 5;
+}
+
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+message ValidateTokenResponse {
+  bool is_valid = 1;
+  UserInfo user_info = 2;
+}
+
+message UserInfo {
+  string user_id = 1;
+  string username = 2;
+  int32 age = 3;
+  string profession = 4;
+  string education = 5;
+  AuthProvider auth_provider = 6;
+}
+
+enum AuthProvider {
+  CUSTOM = 0;
+  GOOGLE = 1;
+} 
