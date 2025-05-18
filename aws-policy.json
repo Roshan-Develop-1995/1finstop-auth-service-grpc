@@ -25,25 +25,43 @@
         {
             "Effect": "Allow",
             "Action": [
-                "secretsmanager:*"
+                "secretsmanager:CreateSecret",
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:PutSecretValue",
+                "secretsmanager:UpdateSecret",
+                "secretsmanager:DeleteSecret",
+                "secretsmanager:ListSecrets",
+                "secretsmanager:TagResource"
             ],
-            "Resource": "*"
+            "Resource": [
+                "arn:aws:secretsmanager:*:*:secret:finstop-*"
+            ]
         },
         {
             "Effect": "Allow",
             "Action": [
                 "iam:PassRole",
-                "iam:*Role*",
-                "iam:*RolePolicy*",
+                "iam:CreateRole",
+                "iam:DeleteRole",
+                "iam:GetRole",
+                "iam:PutRolePolicy",
+                "iam:DeleteRolePolicy",
+                "iam:ListRolePolicies",
+                "iam:ListInstanceProfiles",
                 "iam:ListRoles",
-                "iam:ListInstanceProfiles"
+                "iam:AttachRolePolicy",
+                "iam:DetachRolePolicy"
             ],
             "Resource": "*"
         },
         {
             "Effect": "Allow",
             "Action": [
-                "logs:*"
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogGroups",
+                "logs:DescribeLogStreams"
             ],
             "Resource": "*"
         },
@@ -89,6 +107,26 @@
             "Effect": "Allow",
             "Action": [
                 "rds:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "vpc:*",
+                "ec2:CreateVpc",
+                "ec2:DeleteVpc",
+                "ec2:ModifyVpcAttribute",
+                "ec2:DescribeVpcs",
+                "ec2:CreateSubnet",
+                "ec2:DeleteSubnet",
+                "ec2:ModifySubnetAttribute",
+                "ec2:DescribeSubnets",
+                "ec2:CreateRouteTable",
+                "ec2:DeleteRouteTable",
+                "ec2:DescribeRouteTables",
+                "ec2:CreateRoute",
+                "ec2:DeleteRoute"
             ],
             "Resource": "*"
         }
