@@ -18,9 +18,25 @@
         {
             "Effect": "Allow",
             "Action": [
+                "ec2:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "iam:PassRole",
                 "iam:*Role*",
-                "iam:*RolePolicy*"
+                "iam:*RolePolicy*",
+                "iam:ListRoles",
+                "iam:ListInstanceProfiles"
             ],
             "Resource": "*"
         },
@@ -45,9 +61,7 @@
             ],
             "Resource": [
                 "arn:aws:s3:::finstop-tf-auth-service",
-                "arn:aws:s3:::finstop-tf-auth-service/*",
-                "arn:aws:s3:::finstop-auth-state",
-                "arn:aws:s3:::finstop-auth-state/*"
+                "arn:aws:s3:::finstop-tf-auth-service/*"
             ]
         },
         {
@@ -56,6 +70,27 @@
                 "dynamodb:*"
             ],
             "Resource": "arn:aws:dynamodb:*:*:table/terraform-state-lock"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kms:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "application-autoscaling:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "rds:*"
+            ],
+            "Resource": "*"
         }
     ]
 } 

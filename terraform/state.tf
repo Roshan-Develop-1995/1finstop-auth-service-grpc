@@ -14,6 +14,11 @@ resource "aws_dynamodb_table" "terraform_state_lock" {
     Environment = "shared"
     Service     = "terraform"
   }
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes  = all
+  }
 }
 
 # Create the S3 bucket for Terraform state
@@ -25,6 +30,11 @@ resource "aws_s3_bucket" "terraform_state" {
     Environment = "shared"
     Service     = "terraform"
   }
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes  = all
+  }
 }
 
 # Enable versioning for the S3 bucket
@@ -32,6 +42,10 @@ resource "aws_s3_bucket_versioning" "terraform_state" {
   bucket = aws_s3_bucket.terraform_state.id
   versioning_configuration {
     status = "Enabled"
+  }
+
+  lifecycle {
+    ignore_changes = all
   }
 }
 
@@ -44,6 +58,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" 
       sse_algorithm = "AES256"
     }
   }
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # Block public access to the S3 bucket
@@ -54,4 +72,8 @@ resource "aws_s3_bucket_public_access_block" "terraform_state" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+
+  lifecycle {
+    ignore_changes = all
+  }
 } 
