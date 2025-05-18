@@ -6,9 +6,11 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "finstop-tf-auth-service"
-    key    = "auth-service/terraform.tfstate"
-    region = "us-east-1"
+    bucket         = "finstop-tf-auth-service"
+    key            = "env:/dev/auth-service/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    dynamodb_table = "terraform-state-lock"
   }
 }
 
