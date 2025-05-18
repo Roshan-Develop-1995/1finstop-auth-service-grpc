@@ -37,4 +37,50 @@ build/
 
 ### Logs ###
 *.log
-logs/ 
+logs/
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Local .terraform directories
+.terraform/
+
+# Terraform lock files (optional, but recommended to commit)
+# !.terraform.lock.hcl
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+*.env
+
+# Build
+target/
+build/
+*.class
+*.jar
+!gradle-wrapper.jar
+
+# Logs
+*.log
+logs/
+
+# AWS
+.aws/
+aws.json
+**/aws-credentials.json 

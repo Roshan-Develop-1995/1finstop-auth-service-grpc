@@ -4,43 +4,14 @@
         {
             "Effect": "Allow",
             "Action": [
-                "ecr:GetAuthorizationToken",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:GetRepositoryPolicy",
-                "ecr:DescribeRepositories",
-                "ecr:ListImages",
-                "ecr:DescribeImages",
-                "ecr:BatchGetImage",
-                "ecr:InitiateLayerUpload",
-                "ecr:UploadLayerPart",
-                "ecr:CompleteLayerUpload",
-                "ecr:PutImage",
-                "ecr:CreateRepository",
-                "ecr:DeleteRepository",
-                "ecr:PutLifecyclePolicy",
-                "ecr:PutImageScanningConfiguration"
+                "ecr:*"
             ],
             "Resource": "*"
         },
         {
             "Effect": "Allow",
             "Action": [
-                "ecs:DescribeServices",
-                "ecs:CreateService",
-                "ecs:UpdateService",
-                "ecs:DeleteService",
-                "ecs:DescribeTaskDefinition",
-                "ecs:RegisterTaskDefinition",
-                "ecs:DeregisterTaskDefinition",
-                "ecs:ListTasks",
-                "ecs:DescribeTasks",
-                "ecs:RunTask",
-                "ecs:StopTask",
-                "ecs:ListClusters",
-                "ecs:DescribeClusters",
-                "ecs:CreateCluster",
-                "ecs:DeleteCluster"
+                "ecs:*"
             ],
             "Resource": "*"
         },
@@ -48,74 +19,43 @@
             "Effect": "Allow",
             "Action": [
                 "iam:PassRole",
-                "iam:GetRole",
-                "iam:CreateRole",
-                "iam:DeleteRole",
-                "iam:PutRolePolicy",
-                "iam:DeleteRolePolicy",
-                "iam:AttachRolePolicy",
-                "iam:DetachRolePolicy"
+                "iam:*Role*",
+                "iam:*RolePolicy*"
             ],
             "Resource": "*"
         },
         {
             "Effect": "Allow",
             "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-                "logs:DescribeLogGroups",
-                "logs:DescribeLogStreams"
+                "logs:*"
             ],
             "Resource": "*"
         },
         {
             "Effect": "Allow",
             "Action": [
-                "elasticloadbalancing:DescribeLoadBalancers",
-                "elasticloadbalancing:CreateLoadBalancer",
-                "elasticloadbalancing:DeleteLoadBalancer",
-                "elasticloadbalancing:DescribeTargetGroups",
-                "elasticloadbalancing:CreateTargetGroup",
-                "elasticloadbalancing:DeleteTargetGroup",
-                "elasticloadbalancing:RegisterTargets",
-                "elasticloadbalancing:DeregisterTargets"
+                "elasticloadbalancing:*"
             ],
             "Resource": "*"
         },
         {
             "Effect": "Allow",
             "Action": [
-                "s3:ListBucket",
-                "s3:GetBucketVersioning",
-                "s3:GetBucketLocation"
+                "s3:*"
             ],
             "Resource": [
-                "arn:aws:s3:::finstop-tf-auth-service"
+                "arn:aws:s3:::finstop-tf-auth-service",
+                "arn:aws:s3:::finstop-tf-auth-service/*",
+                "arn:aws:s3:::finstop-auth-state",
+                "arn:aws:s3:::finstop-auth-state/*"
             ]
         },
         {
             "Effect": "Allow",
             "Action": [
-                "s3:GetObject",
-                "s3:PutObject",
-                "s3:DeleteObject"
+                "dynamodb:*"
             ],
-            "Resource": [
-                "arn:aws:s3:::finstop-tf-auth-service/*"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "dynamodb:DescribeTable",
-                "dynamodb:GetItem",
-                "dynamodb:PutItem",
-                "dynamodb:DeleteItem"
-            ],
-            "Resource": [
-                "arn:aws:dynamodb:*:*:table/terraform-state-lock"
-            ]
+            "Resource": "arn:aws:dynamodb:*:*:table/terraform-state-lock"
         }
     ]
 } 
