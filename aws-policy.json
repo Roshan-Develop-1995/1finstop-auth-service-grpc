@@ -34,7 +34,7 @@
                 "secretsmanager:TagResource"
             ],
             "Resource": [
-                "arn:aws:secretsmanager:*:*:secret:finstop-*"
+                "arn:aws:secretsmanager:*:*:secret:finstop-dev/*"
             ]
         },
         {
