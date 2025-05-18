@@ -200,8 +200,10 @@ resource "aws_ecs_task_definition" "auth_service" {
           awslogs-group         = "/ecs/finstop-${var.environment}-auth-service"
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "ecs"
+          awslogs-create-group  = "true"
         }
       }
+      essential = true
     }
   ])
 
