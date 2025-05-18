@@ -50,7 +50,11 @@
                 "iam:ListInstanceProfiles",
                 "iam:ListRoles",
                 "iam:AttachRolePolicy",
-                "iam:DetachRolePolicy"
+                "iam:DetachRolePolicy",
+                "iam:ListAttachedRolePolicies",
+                "iam:GetRolePolicy",
+                "iam:TagRole",
+                "iam:UntagRole"
             ],
             "Resource": "*"
         },
@@ -109,26 +113,6 @@
                 "rds:*"
             ],
             "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "vpc:*",
-                "ec2:CreateVpc",
-                "ec2:DeleteVpc",
-                "ec2:ModifyVpcAttribute",
-                "ec2:DescribeVpcs",
-                "ec2:CreateSubnet",
-                "ec2:DeleteSubnet",
-                "ec2:ModifySubnetAttribute",
-                "ec2:DescribeSubnets",
-                "ec2:CreateRouteTable",
-                "ec2:DeleteRouteTable",
-                "ec2:DescribeRouteTables",
-                "ec2:CreateRoute",
-                "ec2:DeleteRoute"
-            ],
-            "Resource": "*"
         }
     ]
-} 
+}
