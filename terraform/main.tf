@@ -20,7 +20,7 @@ module "vpc" {
   public_subnets  = var.public_subnet_cidrs
 
   enable_nat_gateway = true
-  single_nat_gateway = var.environment != "prod"
+  single_nat_gateway = true  # Always use single NAT gateway in dev
 
   tags = local.common_tags
 }
@@ -112,9 +112,9 @@ resource "aws_rds_cluster" "aurora_postgres_cluster" {
   
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.aurora_cluster_postgres16.name
   
-  backup_retention_period = var.environment == "prod" ? 7 : 1
+  backup_retention_period = 1  # Fixed to 1 day for dev
   preferred_backup_window = "03:00-04:00"
-  skip_final_snapshot    = var.environment != "prod"
+  skip_final_snapshot    = true  # Always skip final snapshot in dev
   
   enabled_cloudwatch_logs_exports = ["postgresql"]
   
@@ -123,7 +123,7 @@ resource "aws_rds_cluster" "aurora_postgres_cluster" {
 
 # Aurora PostgreSQL Instance
 resource "aws_rds_cluster_instance" "aurora_postgres_instance" {
-  count               = var.environment == "prod" ? 2 : 1
+  count               = 1  # Fixed to 1 instance for dev
   identifier          = "finstop-${var.environment}-auth-db-${count.index + 1}"
   cluster_identifier  = aws_rds_cluster.aurora_postgres_cluster.id
   instance_class      = "db.t3.medium"
@@ -155,8 +155,8 @@ resource "aws_ecs_task_definition" "auth_service" {
   family                   = "finstop-${var.environment}-auth-service"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = var.environment == "prod" ? "512" : "256"
-  memory                   = var.environment == "prod" ? "1024" : "512"
+  cpu                      = "256"  # Fixed to dev size
+  memory                   = "512"  # Fixed to dev size
   execution_role_arn      = aws_iam_role.ecs_execution_role.arn
   task_role_arn           = aws_iam_role.ecs_task_role.arn
 
@@ -213,7 +213,7 @@ resource "aws_ecs_service" "auth_service" {
   name            = "finstop-${var.environment}-auth-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.auth_service.arn
-  desired_count   = var.environment == "prod" ? 2 : 1
+  desired_count   = 1  # Fixed to 1 for dev
   launch_type     = "FARGATE"
 
   network_configuration {
