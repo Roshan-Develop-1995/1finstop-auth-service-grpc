@@ -1,10 +1,4 @@
 terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
   backend "s3" {
     bucket         = "finstop-tf-auth-service"
     key            = "env:/dev/auth-service/terraform.tfstate"
@@ -12,10 +6,6 @@ terraform {
     encrypt        = true
     dynamodb_table = "terraform-state-lock"
   }
-}
-
-provider "aws" {
-  region = var.aws_region
 }
 
 # VPC and Network Configuration
@@ -89,24 +79,62 @@ resource "aws_db_subnet_group" "auth_db" {
   })
 }
 
-# RDS Instance
-resource "aws_db_instance" "auth_db" {
-  identifier        = "finstop-${var.environment}-auth-db"
-  engine           = "postgres"
-  engine_version   = "14.10"
-  instance_class   = var.environment == "prod" ? "db.t3.small" : "db.t3.micro"
-  allocated_storage = 20
+# DB Parameter Group for Aurora PostgreSQL 16
+resource "aws_rds_cluster_parameter_group" "aurora_cluster_postgres16" {
+  family = "aurora-postgresql16"
+  name   = "finstop-${var.environment}-aurora-pg16"
 
-  db_name  = "finstop_auth"
-  username = var.db_username
-  password = var.db_password
+  tags = merge(local.common_tags, {
+    Name = "finstop-${var.environment}-aurora-pg16"
+  })
+}
 
-  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+resource "aws_db_parameter_group" "aurora_instance_postgres16" {
+  family = "aurora-postgresql16"
+  name   = "finstop-${var.environment}-aurora-instance-pg16"
+
+  tags = merge(local.common_tags, {
+    Name = "finstop-${var.environment}-aurora-instance-pg16"
+  })
+}
+
+# Aurora PostgreSQL Cluster
+resource "aws_rds_cluster" "aurora_postgres_cluster" {
+  cluster_identifier     = "finstop-${var.environment}-auth-db"
+  engine                = "aurora-postgresql"
+  engine_version        = "16.6"
+  database_name         = "finstop_auth"
+  master_username       = var.db_username
+  master_password       = var.db_password
+  
   db_subnet_group_name   = aws_db_subnet_group.auth_db.name
-
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  
+  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.aurora_cluster_postgres16.name
+  
   backup_retention_period = var.environment == "prod" ? 7 : 1
+  preferred_backup_window = "03:00-04:00"
   skip_final_snapshot    = var.environment != "prod"
+  
+  enabled_cloudwatch_logs_exports = ["postgresql"]
+  
+  tags = local.common_tags
+}
 
+# Aurora PostgreSQL Instance
+resource "aws_rds_cluster_instance" "aurora_postgres_instance" {
+  count               = var.environment == "prod" ? 2 : 1
+  identifier          = "finstop-${var.environment}-auth-db-${count.index + 1}"
+  cluster_identifier  = aws_rds_cluster.aurora_postgres_cluster.id
+  instance_class      = "db.t3.medium"
+  engine              = "aurora-postgresql"
+  engine_version      = "16.6"
+  
+  db_parameter_group_name = aws_db_parameter_group.aurora_instance_postgres16.name
+  
+  publicly_accessible    = false
+  db_subnet_group_name   = aws_db_subnet_group.auth_db.name
+  
   tags = local.common_tags
 }
 
@@ -149,7 +177,7 @@ resource "aws_ecs_task_definition" "auth_service" {
         },
         {
           name  = "SPRING_DATASOURCE_URL"
-          value = "jdbc:postgresql://${aws_db_instance.auth_db.endpoint}/${aws_db_instance.auth_db.db_name}"
+          value = "jdbc:postgresql://${aws_rds_cluster.aurora_postgres_cluster.endpoint}:5432/${aws_rds_cluster.aurora_postgres_cluster.database_name}"
         }
       ]
       secrets = [
@@ -194,4 +222,28 @@ resource "aws_ecs_service" "auth_service" {
   }
 
   tags = local.common_tags
+}
+
+# Add necessary IAM permissions for the ECS execution role
+resource "aws_iam_role_policy" "ecs_execution_role_permissions" {
+  name = "finstop-${var.environment}-ecs-execution-permissions"
+  role = aws_iam_role.ecs_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:ListInstanceProfilesForRole",
+          "iam:PassRole",
+          "iam:GetRole"
+        ]
+        Resource = [
+          aws_iam_role.ecs_execution_role.arn,
+          aws_iam_role.ecs_task_role.arn
+        ]
+      }
+    ]
+  })
 } 

@@ -5,7 +5,7 @@ variable "aws_region" {
 }
 
 variable "environment" {
-  description = "Environment (dev/prod)"
+  description = "Environment name (e.g., dev, prod)"
   type        = string
   default     = "dev"
 }
@@ -35,13 +35,13 @@ variable "public_subnet_cidrs" {
 }
 
 variable "db_username" {
-  description = "Username for RDS instance"
+  description = "Username for the RDS database"
   type        = string
   sensitive   = true
 }
 
 variable "db_password" {
-  description = "Password for RDS instance"
+  description = "Password for the RDS database"
   type        = string
   sensitive   = true
 }
