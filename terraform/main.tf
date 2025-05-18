@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "finstop-terraform-state"
+    bucket = "finstop-tf-auth-service"
     key    = "auth-service/terraform.tfstate"
     region = "us-east-1"
   }
