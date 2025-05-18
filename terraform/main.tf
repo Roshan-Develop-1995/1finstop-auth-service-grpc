@@ -35,6 +35,60 @@ module "vpc" {
   tags = local.common_tags
 }
 
+# Security Group for RDS
+resource "aws_security_group" "rds_sg" {
+  name        = "finstop-${var.environment}-rds-sg"
+  description = "Security group for RDS instance"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs_service_sg.id]
+  }
+
+  tags = merge(local.common_tags, {
+    Name = "finstop-${var.environment}-rds-sg"
+  })
+}
+
+# Security Group for ECS Service
+resource "aws_security_group" "ecs_service_sg" {
+  name        = "finstop-${var.environment}-ecs-service-sg"
+  description = "Security group for ECS service"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(local.common_tags, {
+    Name = "finstop-${var.environment}-ecs-service-sg"
+  })
+}
+
+# DB Subnet Group
+resource "aws_db_subnet_group" "auth_db" {
+  name        = "finstop-${var.environment}-db-subnet-group"
+  description = "Subnet group for RDS instance"
+  subnet_ids  = module.vpc.private_subnets
+
+  tags = merge(local.common_tags, {
+    Name = "finstop-${var.environment}-db-subnet-group"
+  })
+}
+
 # RDS Instance
 resource "aws_db_instance" "auth_db" {
   identifier        = "finstop-${var.environment}-auth-db"
