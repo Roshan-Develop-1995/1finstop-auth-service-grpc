@@ -5,16 +5,13 @@ terraform {
       version = "~> 5.0"
     }
   }
-  # Temporarily comment out backend configuration
-  /*
   backend "s3" {
-    bucket         = "finstop-auth-state"
+    bucket         = "finstop-tf-auth-service"
     key            = "env:/dev/auth-service/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
     dynamodb_table = "terraform-state-lock"
   }
-  */
 }
 
 provider "aws" {

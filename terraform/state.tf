@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
 # DynamoDB table for Terraform state locking
 resource "aws_dynamodb_table" "terraform_state_lock" {
   name           = "terraform-state-lock"
@@ -22,7 +18,7 @@ resource "aws_dynamodb_table" "terraform_state_lock" {
 
 # Create the S3 bucket for Terraform state
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "finstop-auth-state"
+  bucket = "finstop-tf-auth-service"
 
   tags = {
     Name        = "Terraform State Bucket"
