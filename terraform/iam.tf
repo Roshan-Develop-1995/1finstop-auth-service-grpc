@@ -23,7 +23,7 @@ resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# Allow reading from Secrets Manager
+# Allow reading from Secrets Manager and ECR
 resource "aws_iam_role_policy" "ecs_execution_secrets" {
   name = "finstop-${var.environment}-ecs-execution-secrets"
   role = aws_iam_role.ecs_execution_role.id
@@ -50,6 +50,22 @@ resource "aws_iam_role_policy" "ecs_execution_secrets" {
           "logs:PutLogEvents"
         ]
         Resource = ["*"]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = ["*"]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ]
+        Resource = [aws_ecr_repository.auth_service.arn]
       }
     ]
   })

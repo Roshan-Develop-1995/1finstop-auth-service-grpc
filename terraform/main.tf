@@ -207,7 +207,9 @@ resource "aws_ecs_task_definition" "auth_service" {
     }
   ])
 
-  tags = local.common_tags
+  tags = merge(local.common_tags, {
+    DeploymentTime = timestamp()
+  })
 }
 
 # ECS Service
@@ -217,6 +219,7 @@ resource "aws_ecs_service" "auth_service" {
   task_definition = aws_ecs_task_definition.auth_service.arn
   desired_count   = 1  # Fixed to 1 for dev
   launch_type     = "FARGATE"
+  force_new_deployment = true
 
   network_configuration {
     subnets         = module.vpc.private_subnets
