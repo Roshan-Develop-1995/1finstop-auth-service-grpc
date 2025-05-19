@@ -1,118 +1,82 @@
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ecr:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ecs:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "secretsmanager:CreateSecret",
-                "secretsmanager:GetSecretValue",
-                "secretsmanager:PutSecretValue",
-                "secretsmanager:UpdateSecret",
-                "secretsmanager:DeleteSecret",
-                "secretsmanager:ListSecrets",
-                "secretsmanager:TagResource"
-            ],
-            "Resource": [
-                "arn:aws:secretsmanager:*:*:secret:finstop-dev/*"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "iam:PassRole",
-                "iam:CreateRole",
-                "iam:DeleteRole",
-                "iam:GetRole",
-                "iam:PutRolePolicy",
-                "iam:DeleteRolePolicy",
-                "iam:ListRolePolicies",
-                "iam:ListInstanceProfiles",
-                "iam:ListRoles",
-                "iam:AttachRolePolicy",
-                "iam:DetachRolePolicy",
-                "iam:ListAttachedRolePolicies",
-                "iam:GetRolePolicy",
-                "iam:TagRole",
-                "iam:UntagRole"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-                "logs:DescribeLogGroups",
-                "logs:DescribeLogStreams"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "elasticloadbalancing:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:*"
-            ],
-            "Resource": [
-                "arn:aws:s3:::finstop-tf-auth-service",
-                "arn:aws:s3:::finstop-tf-auth-service/*"
-            ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "dynamodb:*"
-            ],
-            "Resource": "arn:aws:dynamodb:*:*:table/terraform-state-lock"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "kms:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "application-autoscaling:*"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "rds:*"
-            ],
-            "Resource": "*"
-        }
-    ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "VisualEditor0",
+			"Effect": "Allow",
+			"Action": [
+				"application-autoscaling:*",
+				"iam:UntagRole",
+				"rds:*",
+				"logs:DescribeLogStreams",
+				"iam:TagRole",
+				"route53:GetHostedZone",
+				"iam:CreateRole",
+				"iam:AttachRolePolicy",
+				"iam:PutRolePolicy",
+				"iam:PassRole",
+				"logs:CreateLogStream",
+				"iam:DetachRolePolicy",
+				"iam:ListAttachedRolePolicies",
+				"iam:DeleteRolePolicy",
+				"kms:*",
+				"route53:ListResourceRecordSets",
+				"route53:DeleteHostedZone",
+				"route53:UpdateHostedZoneComment",
+				"iam:ListRolePolicies",
+				"iam:GetRole",
+				"route53:CreateHostedZone",
+				"logs:DescribeLogGroups",
+				"route53:ListHostedZones",
+				"route53:ChangeResourceRecordSets",
+				"iam:ListRoles",
+				"iam:DeleteRole",
+				"elasticloadbalancing:*",
+				"iam:ListInstanceProfiles",
+				"logs:CreateLogGroup",
+				"logs:PutLogEvents",
+				"iam:CreateServiceLinkedRole",
+				"ecs:*",
+				"ecr:*",
+				"ec2:*",
+				"iam:GetRolePolicy",
+				"acm:*"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "VisualEditor1",
+			"Effect": "Allow",
+			"Action": [
+				"secretsmanager:GetSecretValue",
+				"secretsmanager:PutSecretValue",
+				"secretsmanager:CreateSecret",
+				"secretsmanager:DeleteSecret",
+				"secretsmanager:TagResource",
+				"secretsmanager:UpdateSecret"
+			],
+			"Resource": "arn:aws:secretsmanager:*:*:secret:finstop-dev/*"
+		},
+		{
+			"Sid": "VisualEditor2",
+			"Effect": "Allow",
+			"Action": "secretsmanager:ListSecrets",
+			"Resource": "arn:aws:secretsmanager:*:*:secret:finstop-dev/*"
+		},
+		{
+			"Sid": "VisualEditor3",
+			"Effect": "Allow",
+			"Action": "s3:*",
+			"Resource": [
+				"arn:aws:s3:::finstop-tf-auth-service/*",
+				"arn:aws:s3:::finstop-tf-auth-service"
+			]
+		},
+		{
+			"Sid": "VisualEditor4",
+			"Effect": "Allow",
+			"Action": "dynamodb:*",
+			"Resource": "arn:aws:dynamodb:*:*:table/terraform-state-lock"
+		}
+	]
 }

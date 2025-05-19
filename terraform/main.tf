@@ -8,6 +8,13 @@ terraform {
   }
 }
 
+# Route53 Zone resource
+resource "aws_route53_zone" "main" {
+  name = var.domain_name
+
+  tags = local.common_tags
+}
+
 # VPC and Network Configuration
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
@@ -50,10 +57,10 @@ resource "aws_security_group" "ecs_service_sg" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    from_port   = 9090
-    to_port     = 9090
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 9090
+    to_port         = 9090
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id]
   }
 
   egress {
@@ -224,9 +231,18 @@ resource "aws_ecs_service" "auth_service" {
   network_configuration {
     subnets         = module.vpc.private_subnets
     security_groups = [aws_security_group.ecs_service_sg.id]
+    assign_public_ip = false
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.auth_service.arn
+    container_name   = "auth-service"
+    container_port   = 9090
   }
 
   tags = local.common_tags
+
+  depends_on = [aws_lb_listener.http, aws_lb_listener.https]
 }
 
 # Add necessary IAM permissions for the ECS execution role
